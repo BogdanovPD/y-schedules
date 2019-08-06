@@ -1,0 +1,71 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: pavel
+      changes:
+        - createSequence:
+            incrementBy: 1
+            minValue: 1
+            schemaName: schedules
+            sequenceName: services_id_seq
+            startValue: 1
+        - createTable:
+            tableName: services
+            columns:
+              - column:
+                  name: id
+                  type: serial
+                  defaultValueSequenceNext: services_id_seq
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: pk_services
+                    nullable: false
+              - column:
+                  name: name
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: duration_minutes
+                  type: smallint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: price
+                  type: smallint
+                  constraints:
+                    nullable: false
+        - createTable:
+            tableName: services_specialists
+            columns:
+              - column:
+                  name: service_id
+                  type: integer
+                  defaultValueSequenceNext: services_id_seq
+                  autoIncrement: true
+                  constraints:
+                    references: services
+                    foreignKeyName: pk_services
+                    nullable: false
+              - column:
+                  name: specialist_uuid
+                  type: uuid
+                  constraints:
+                    nullable: false
+        - createTable:
+            tableName: user_calendar
+            columns:
+              - column:
+                  name: user_id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: pk_user_calendar
+                    nullable: false
+              - column:
+                  name: calendar_id
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
