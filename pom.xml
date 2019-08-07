@@ -27,6 +27,7 @@
 
         <jaxb-api.version>2.3.1</jaxb-api.version>
         <jaxb-runtime.version>2.3.1</jaxb-runtime.version>
+        <jackson-core.version>2.9.8</jackson-core.version>
         <google-api.version>1.28.0</google-api.version>
         <google-calendar.version>v3-rev20181125</google-calendar.version>
     </properties>
@@ -78,6 +79,13 @@
             <groupId>org.glassfish.jaxb</groupId>
             <artifactId>jaxb-runtime</artifactId>
             <version>${jaxb-runtime.version}</version>
+        </dependency>
+
+        <!--Jackson-->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+            <version>${jackson-core.version}</version>
         </dependency>
 
         <!--Google Calendar-->

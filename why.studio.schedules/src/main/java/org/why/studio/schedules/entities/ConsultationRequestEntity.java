@@ -1,6 +1,7 @@
 package org.why.studio.schedules.entities;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -12,7 +13,8 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "consultation_request")
+@Table(name = "consultation_requests")
+@Builder
 public class ConsultationRequestEntity {
 
     @Id
@@ -22,7 +24,9 @@ public class ConsultationRequestEntity {
     protected UUID userId;
     protected UUID specialistId;
     @ManyToOne
+    @JoinColumn(name = "service_id")
     protected ServiceEntity service;
     protected LocalDateTime startDateTime;
+    protected Boolean approved;
 
 }

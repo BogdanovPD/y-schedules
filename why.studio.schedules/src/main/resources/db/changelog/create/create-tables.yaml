@@ -1,4 +1,8 @@
 databaseChangeLog:
+  - property:
+      name: next_uuid
+      value: uuid_in(overlay(overlay(md5(random()::text || ':' || clock_timestamp()::text) placing '4' from 13) placing to_hex(floor(random()*(11-8+1) + 8)::int)::text from 17)::cstring)
+      dbms: postgresql
   - changeSet:
       id: 1
       author: pavel
@@ -69,3 +73,62 @@ databaseChangeLog:
                   type: varchar(255)
                   constraints:
                     nullable: false
+        - createTable:
+            tableName: user_primary_specialist
+            columns:
+              - column:
+                  name: user_id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: pk_user_primary_specialist
+                    nullable: false
+              - column:
+                  name: specialist_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+              - column:
+                  name: approved
+                  type: boolean
+                  defaultValue: false
+                  constraints:
+                    nullable: false
+        - createTable:
+            tableName: consultation_requests
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  defaultValueComputed: ${next_uuid}
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: pk_consultation_request
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+              - column:
+                  name: specialist_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+              - column:
+                  name: service_id
+                  type: integer
+                  defaultValueSequenceNext: services_id_seq
+                  autoIncrement: true
+                  constraints:
+                    references: services
+                    foreignKeyName: pk_services
+                    nullable: false
+              - column:
+                  name: start_date_time
+                  type: timestamp
+                  constraints:
+                    nullable: false
+              - column:
+                  name: approved
+                  type: boolean

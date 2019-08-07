@@ -3,6 +3,7 @@ package org.why.studio.schedules.controllers;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.why.studio.schedules.dto.ConsultationRequestInput;
 import org.why.studio.schedules.dto.Service;
 import org.why.studio.schedules.services.ServiceService;
 
@@ -31,18 +32,23 @@ public class SchedulesController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping(value = "user/{id}/services")
+    @GetMapping(value = "specialist/{id}/services")
     public ResponseEntity<List<Service>> getUserServices(@PathVariable("id") String userId,
                                                @RequestBody Set<Service> services) {
         serviceService.addServicesToUser(userId, services);
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping(value = "user/{id}/services")
+    @PostMapping(value = "specialist/{id}/services")
     public ResponseEntity<?> addServicesToUser(@PathVariable("id") String userId,
                                                @RequestBody Set<Service> services) {
         serviceService.addServicesToUser(userId, services);
         return ResponseEntity.ok().build();
+    }
+
+    @PostMapping(value = "consultation-requests")
+    public ResponseEntity<?> getConsultationRequests(@RequestBody ConsultationRequestInput consultationRequest) {
+        return null;
     }
 
 }

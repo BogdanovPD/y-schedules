@@ -29,3 +29,8 @@ calendar:
     tokens-dir: tokens
     creds-path: /google-calendar-credentials.json
   id: why-studio.com_1884je5jtgudojlbmpmso91p9n7a86gb68r32d1i6gpj2dhl6k@resource.calendar.google.com
+
+services:
+  auth:
+    url: http://localhost:8102/
+    user-info: ${services.auth.url}user/

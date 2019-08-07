@@ -2,16 +2,13 @@ package org.why.studio.schedules.services.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.convert.ConversionService;
-import org.springframework.http.HttpStatus;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 import org.why.studio.schedules.dto.Service;
 import org.why.studio.schedules.entities.ServiceEntity;
 import org.why.studio.schedules.repositories.ServiceRepository;
 import org.why.studio.schedules.services.ServiceService;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static org.why.studio.schedules.util.Utils.*;
 
@@ -63,13 +60,4 @@ public class ServiceServiceImpl implements ServiceService {
         return services;
     }
 
-    private UUID getUuid(String userId) {
-        UUID uuid;
-        try {
-            uuid = UUID.fromString(userId);
-        } catch (IllegalArgumentException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "UserId должен быть в формате UUID v4");
-        }
-        return uuid;
-    }
 }

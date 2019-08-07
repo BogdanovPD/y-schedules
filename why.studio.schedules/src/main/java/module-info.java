@@ -17,6 +17,10 @@ open module why.studio.schedules {
     requires com.sun.xml.bind;
 
     requires net.bytebuddy;
+    requires org.hibernate.orm.core;
+
+    requires com.fasterxml.jackson.annotation;
+    requires com.fasterxml.jackson.core;
 
     requires com.google.api.client;
     requires google.api.client;
