@@ -12,24 +12,21 @@ import java.util.UUID;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
-@Table(name = "consultation_requests")
 @Builder
-public class ConsultationRequestEntity {
+@Entity
+@Table(name = "user_log")
+public class UserLogEntity {
 
     @Id
     @GeneratedValue
     protected UUID id;
 
+    //specialist or user
     @Column(nullable = false)
     protected UUID userId;
     @Column(nullable = false)
-    protected UUID specialistId;
-    @ManyToOne
-    @JoinColumn(name = "service_id")
-    protected ServiceEntity service;
+    protected LocalDateTime dateTime;
     @Column(nullable = false)
-    protected LocalDateTime startDateTime;
-    protected Boolean approved;
+    protected String message;
 
 }

@@ -11,8 +11,8 @@ public interface ConsultationRequestService {
     void save(ConsultationRequestInput consultationRequest);
     List<ConsultationRequestOutputSpec> getSpecialistConsultationRequests(String specId);
     List<ConsultationRequestOutputUser> getUserConsultationRequests(String userId);
-    void removeRequest(String requestId);
-    void acceptRequest(String requestId);
+    void approveRequest(String requestId);
+    void rejectRequest(String requestId);
     void declineRequest(String requestId);
-
+    void deleteOldRequests();
 }

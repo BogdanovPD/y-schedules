@@ -5,8 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ConversionServiceFactoryBean;
 import org.springframework.core.convert.ConversionService;
-import org.why.studio.schedules.converters.ServiceEntityToServiceConverter;
-import org.why.studio.schedules.converters.ServiceToServiceEntityConverter;
+import org.why.studio.schedules.converters.*;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -17,13 +16,27 @@ public class ConvertersConfig {
 
     private final ServiceToServiceEntityConverter serviceToServiceEntityConverter;
     private final ServiceEntityToServiceConverter serviceEntityToServiceConverter;
+    private final ConsultationRequestInputToConsultationRequestEntityConverter
+            consultationRequestInputToConsultationRequestEntityConverter;
+    private final ConsultationRequestEntityConverterToConsultationRequestOutputUserConverter
+            consultationRequestEntityConverterToConsultationRequestOutputUserConverter;
+    private final ConsultationRequestEntityConverterToConsultationRequestOutputSpecConverter
+            consultationRequestEntityConverterToConsultationRequestOutputSpecConverter;
+    private final UserLogEntityToUserLogConverter userLogEntityToUserLogConverter;
+    private final UserPrimarySpecialistToUserPrimarySpecialistEntityConverter
+            userPrimarySpecialistToUserPrimarySpecialistEntityConverter;
 
     @Bean
     public ConversionService schedulesConverterService() {
         ConversionServiceFactoryBean bean = new ConversionServiceFactoryBean();
         bean.setConverters(new HashSet<>(Arrays.asList(
                 serviceToServiceEntityConverter,
-                serviceEntityToServiceConverter
+                serviceEntityToServiceConverter,
+                consultationRequestInputToConsultationRequestEntityConverter,
+                consultationRequestEntityConverterToConsultationRequestOutputUserConverter,
+                consultationRequestEntityConverterToConsultationRequestOutputSpecConverter,
+                userLogEntityToUserLogConverter,
+                userPrimarySpecialistToUserPrimarySpecialistEntityConverter
         )));
         bean.afterPropertiesSet();
         return bean.getObject();

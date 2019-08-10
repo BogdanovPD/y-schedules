@@ -22,8 +22,9 @@ public class ServiceEntity {
     @GeneratedValue(generator = "services_id_seq")
     protected int id;
     protected String name;
-    @Column(name = "duration_minutes")
+    @Column(name = "duration_minutes", nullable = false)
     protected int duration;
+    @Column(nullable = false)
     protected int price;
 
     @ElementCollection

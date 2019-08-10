@@ -81,7 +81,7 @@ databaseChangeLog:
                   type: uuid
                   constraints:
                     primaryKey: true
-                    primaryKeyName: pk_user_primary_specialist
+                    primaryKeyName: pk_user_primary_specialist_user_id
                     nullable: false
               - column:
                   name: specialist_id
@@ -93,6 +93,8 @@ databaseChangeLog:
                   type: boolean
                   defaultValue: false
                   constraints:
+                    primaryKey: true
+                    primaryKeyName: pk_user_primary_specialist_approved
                     nullable: false
         - createTable:
             tableName: consultation_requests
@@ -132,3 +134,28 @@ databaseChangeLog:
               - column:
                   name: approved
                   type: boolean
+        - createTable:
+            tableName: user_log
+            columns:
+              - - column:
+                    name: id
+                    type: uuid
+                    constraints:
+                      primaryKey: true
+                      primaryKeyName: pk_user_log
+                      nullable: false
+              - column:
+                  name: user_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+              - column:
+                  name: start_date_time
+                  type: timestamp
+                  constraints:
+                    nullable: false
+              - column:
+                  name: message
+                  type: varchar(1000)
+                  constraints:
+                    nullable: false

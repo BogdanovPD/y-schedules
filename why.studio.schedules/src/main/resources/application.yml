@@ -34,3 +34,5 @@ services:
   auth:
     url: http://localhost:8102/
     user-info: ${services.auth.url}user/
+
+output-datetime-format: dd.MM.yyyy HH:mm

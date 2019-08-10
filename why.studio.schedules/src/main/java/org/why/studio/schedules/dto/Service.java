@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
 
 @Data
 @NoArgsConstructor
@@ -14,8 +16,11 @@ import javax.persistence.*;
 public class Service {
 
     protected int id;
+    @NotBlank
     protected String name;
+    @Min(1)
     protected int duration;
+    @Min(300)
     protected int price;
 
 }

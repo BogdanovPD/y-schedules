@@ -19,5 +19,6 @@ public class ConsultationRequestOutputUser {
     protected int serviceId;
     protected LocalDateTime startDateTime;
     protected Boolean approved;
+    protected boolean declineRequest;
 
 }

@@ -1,7 +1,6 @@
-package org.why.studio.schedules.entities;
+package org.why.studio.schedules.dto;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -14,14 +13,9 @@ import java.util.UUID;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
-@Table(name = "user_calendar")
-@Builder
-public class UserCalendarEntity {
+public class UserCalendar {
 
-    @Id
     private UUID userId;
-    @Column(nullable = false)
     private String calendarId;
 
 }

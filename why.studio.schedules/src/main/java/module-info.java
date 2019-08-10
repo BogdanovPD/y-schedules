@@ -12,6 +12,7 @@ open module why.studio.schedules {
 
     requires java.sql;
     requires java.persistence;
+    requires java.validation;
 
     requires java.xml.bind;
     requires com.sun.xml.bind;
