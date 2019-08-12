@@ -8,6 +8,7 @@ import org.why.studio.schedules.dto.UserInfoWithId;
 import org.why.studio.schedules.dto.UserPrimarySpecialist;
 import org.why.studio.schedules.services.UserPrimarySpecialistService;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -17,7 +18,7 @@ public class UserSpecialistController {
     private final UserPrimarySpecialistService userPrimarySpecialistService;
 
     @PostMapping("user/specialist/request")
-    public ResponseEntity<?> requestPrimarySpecialist(@RequestBody UserPrimarySpecialist userPrimarySpecialist) {
+    public ResponseEntity<?> requestPrimarySpecialist(@RequestBody @Valid UserPrimarySpecialist userPrimarySpecialist) {
         userPrimarySpecialistService.requestSetPrimarySpecialist(userPrimarySpecialist);
         return ResponseEntity.ok().build();
     }

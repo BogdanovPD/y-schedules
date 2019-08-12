@@ -4,8 +4,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.why.studio.schedules.dto.Service;
+import org.why.studio.schedules.dto.ServicesDto;
 import org.why.studio.schedules.services.ServiceService;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Set;
 
@@ -16,7 +18,7 @@ public class ServicesController {
     private final ServiceService serviceService;
 
     @PostMapping(value = "services")
-    public ResponseEntity<Service> saveService(@RequestBody Service service) {
+    public ResponseEntity<Service> saveService(@RequestBody @Valid Service service) {
         return ResponseEntity.ok(serviceService.saveService(service));
     }
 
@@ -33,8 +35,8 @@ public class ServicesController {
 
     @PostMapping(value = "specialist/{id}/services")
     public ResponseEntity<?> addServicesToUser(@PathVariable("id") String userId,
-                                               @RequestBody Set<Service> services) {
-        serviceService.addServicesToUser(userId, services);
+                                               @RequestBody ServicesDto servicesDto) {
+        serviceService.addServicesToUser(userId, servicesDto.getServices());
         return ResponseEntity.ok().build();
     }
 

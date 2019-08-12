@@ -8,6 +8,7 @@ import org.why.studio.schedules.dto.ConsultationRequestOutputSpec;
 import org.why.studio.schedules.dto.ConsultationRequestOutputUser;
 import org.why.studio.schedules.services.ConsultationRequestService;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -17,7 +18,7 @@ public class ConsultationController {
     private final ConsultationRequestService consultationRequestService;
 
     @PostMapping(value = "consultation-requests")
-    public ResponseEntity<?> saveConsultationRequest(@RequestBody ConsultationRequestInput consultationRequest) {
+    public ResponseEntity<?> saveConsultationRequest(@RequestBody @Valid ConsultationRequestInput consultationRequest) {
         consultationRequestService.save(consultationRequest);
         return ResponseEntity.ok().build();
     }
