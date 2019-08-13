@@ -15,7 +15,7 @@ import java.util.UUID;
 @AllArgsConstructor
 public class UserCalendar {
 
-    private UUID userId;
+    private String userId;
     private String calendarId;
 
 }

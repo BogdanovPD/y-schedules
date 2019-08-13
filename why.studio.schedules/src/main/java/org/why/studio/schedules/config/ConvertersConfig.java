@@ -25,6 +25,7 @@ public class ConvertersConfig {
     private final UserLogEntityToUserLogConverter userLogEntityToUserLogConverter;
     private final UserPrimarySpecialistToUserPrimarySpecialistEntityConverter
             userPrimarySpecialistToUserPrimarySpecialistEntityConverter;
+    private final UserCalendarToUserCalendarEntityConverter userCalendarToUserCalendarEntityConverter;
 
     @Bean
     public ConversionService schedulesConverterService() {
@@ -36,7 +37,8 @@ public class ConvertersConfig {
                 consultationRequestEntityConverterToConsultationRequestOutputUserConverter,
                 consultationRequestEntityConverterToConsultationRequestOutputSpecConverter,
                 userLogEntityToUserLogConverter,
-                userPrimarySpecialistToUserPrimarySpecialistEntityConverter
+                userPrimarySpecialistToUserPrimarySpecialistEntityConverter,
+                userCalendarToUserCalendarEntityConverter
         )));
         bean.afterPropertiesSet();
         return bean.getObject();

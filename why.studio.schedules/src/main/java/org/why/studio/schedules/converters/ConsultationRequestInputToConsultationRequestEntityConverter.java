@@ -40,6 +40,7 @@ public class ConsultationRequestInputToConsultationRequestEntityConverter
                 .service(serviceEntity)
                 .specialistId(getUuid(consultationRequestInput.getSpecialistId()))
                 .userId(getUuid(consultationRequestInput.getUserId()))
+                .startDateTime(consultationRequestInput.getStartDateTime())
                 .build();
     }
 }

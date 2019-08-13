@@ -7,6 +7,8 @@ import org.why.studio.schedules.dto.UserCalendar;
 import org.why.studio.schedules.entities.UserCalendarEntity;
 import org.why.studio.schedules.repositories.UserCalendarRepository;
 
+import static org.why.studio.schedules.util.Utils.getUuid;
+
 @Component
 @RequiredArgsConstructor
 public class UserCalendarToUserCalendarEntityConverter implements Converter<UserCalendar, UserCalendarEntity> {
@@ -15,14 +17,14 @@ public class UserCalendarToUserCalendarEntityConverter implements Converter<User
 
     @Override
     public UserCalendarEntity convert(UserCalendar userCalendar) {
-        return userCalendarRepository.findById(userCalendar.getUserId())
+        return userCalendarRepository.findById(getUuid(userCalendar.getUserId()))
                 .map(uce -> {
                     uce.setCalendarId(userCalendar.getCalendarId());
                     return uce;
                 })
                 .orElseGet(() ->
                         UserCalendarEntity.builder()
-                                .userId(userCalendar.getUserId())
+                                .userId(getUuid(userCalendar.getUserId()))
                                 .calendarId(userCalendar.getCalendarId())
                                 .build()
                 );

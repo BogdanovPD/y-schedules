@@ -15,6 +15,7 @@ import org.why.studio.schedules.entities.ConsultationRequestEntity;
 import org.why.studio.schedules.repositories.ConsultationRequestRepository;
 import org.why.studio.schedules.services.AuthService;
 import org.why.studio.schedules.services.ConsultationRequestService;
+import org.why.studio.schedules.services.GoogleCalendarService;
 import org.why.studio.schedules.services.UserLogService;
 
 import java.time.LocalDateTime;
@@ -37,6 +38,7 @@ public class ConsultationRequestServiceImpl implements ConsultationRequestServic
     private final AuthService authService;
     private final UserLogService userLogService;
     private final DateTimeFormatter dateTimeFormatter;
+    private final GoogleCalendarService googleCalendarService;
 
     @Override
     public void save(ConsultationRequestInput consultationRequest) {
@@ -71,7 +73,17 @@ public class ConsultationRequestServiceImpl implements ConsultationRequestServic
 
     @Override
     public void approveRequest(String requestId) {
-        ConsultationRequestEntity requestEntity = getRequestAndSetApproved(requestId, true);
+        ConsultationRequestEntity requestEntity = getConsultationRequestEntity(requestId);
+        googleCalendarService.createUpcomingEvent(
+                requestEntity.getUserId().toString(),
+                requestEntity.getSpecialistId().toString(),
+                requestEntity.getService().getName(),
+                requestEntity.getStartDateTime(),
+                requestEntity.getStartDateTime()
+                        .plusMinutes(requestEntity.getService().getDuration())
+        );
+        requestEntity.setApproved(true);
+        crRepository.save(requestEntity);
         logRequestAction(requestEntity, "Запрос на консультацию", "подтвержден специалистом " +
                 "(Вы можете отменить консультацию воспользовавшись формой отмены. " +
                 "Обращаем внимание, что, в соответствии с правилами, отмена должна осуществляться " +

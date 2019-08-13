@@ -6,12 +6,10 @@ import com.google.api.services.calendar.model.FreeBusyRequestItem;
 import com.google.api.services.calendar.model.FreeBusyResponse;
 import com.google.api.services.calendar.model.TimePeriod;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import org.why.studio.schedules.services.FreeTimeService;
-import org.why.studio.schedules.services.ServiceService;
 import org.why.studio.schedules.services.UserCalendarService;
 
 import java.io.IOException;
@@ -33,24 +31,36 @@ public class FreeTimeServiceImpl implements FreeTimeService {
     private final Calendar calendarService;
     private final UserCalendarService userCalendarService;
 
-    @Value("${calendar.id}")
-    private String resourceCalendarId;
-
     @Override
     public List<LocalDateTime> getSpecFreeTime(String userId, LocalDate date, int serviceDuration) {
-        String userCalendarId = userCalendarService.getUserCalendar(userId);
         LocalDateTime start = date.atStartOfDay().isBefore(LocalDateTime.now())
-                //если записываюся сегодня, близжайшая запись минимум через 3 часа
+                //если записываюся сегодня, близжайшая запись минимум через MIN_HOURS_BEFORE_DECLINE
                 ? LocalDateTime.now().plusHours(MIN_HOURS_BEFORE_DECLINE).truncatedTo(ChronoUnit.HOURS)
                 : date.atStartOfDay().plusHours(FIRST_CONSULTATION_HOUR);
         LocalDateTime end = date.atStartOfDay().plusDays(1).minusSeconds(1);
 
-        FreeBusyRequestItem itemUserCalendar = new FreeBusyRequestItem();
-        itemUserCalendar.setId(userCalendarId);
-        FreeBusyRequestItem itemResourceCalendar = new FreeBusyRequestItem();
-        itemResourceCalendar.setId(resourceCalendarId);
+
+        FreeBusyResponse freeBusyResponse = getFreebusyResponse(userId, start, end);
+        List<TimePeriod> busy = new LinkedList<>();
+        userCalendarService.getCalendarIds(userId).forEach(
+                calId -> busy.addAll(freeBusyResponse.getCalendars().get(calId).getBusy()));
+        LinkedList<TimePeriod> busyTimePeriods = new LinkedList<>(new LinkedHashSet<>(busy));
+        return getUserFreeTimeList(serviceDuration, start, busyTimePeriods);
+    }
+
+    private List<FreeBusyRequestItem> getCalendars(String userId) {
+        List<FreeBusyRequestItem> freeBusyRequestItems = new LinkedList<>();
+        for(String calId : userCalendarService.getCalendarIds(userId)) {
+            FreeBusyRequestItem itemUserCalendar = new FreeBusyRequestItem();
+            itemUserCalendar.setId(calId);
+            freeBusyRequestItems.add(itemUserCalendar);
+        }
+        return freeBusyRequestItems;
+    }
+
+    private FreeBusyResponse getFreebusyResponse(String userId, LocalDateTime start, LocalDateTime end) {
         FreeBusyRequest freeBusyRequest = new FreeBusyRequest();
-        freeBusyRequest.setItems(List.of(itemResourceCalendar, itemUserCalendar));
+        freeBusyRequest.setItems(getCalendars(userId));
         freeBusyRequest.setTimeZone(TimeZone.getDefault().getID());
         freeBusyRequest.setTimeMin(getDateTime(start));
         freeBusyRequest.setTimeMax(getDateTime(end));
@@ -61,11 +71,7 @@ public class FreeTimeServiceImpl implements FreeTimeService {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
                     "Ошибка при получении свободного времени: " + e.getMessage());
         }
-        List<TimePeriod> busy = new LinkedList<>();
-        busy.addAll(freeBusyResponse.getCalendars().get(userCalendarId).getBusy());
-        busy.addAll(freeBusyResponse.getCalendars().get(resourceCalendarId).getBusy());
-        busy = new LinkedList<>(new LinkedHashSet<>(busy));
-        return getUserFreeTimeList(serviceDuration, start,busy);
+        return freeBusyResponse;
     }
 
     private List<LocalDateTime> getUserFreeTimeList(int serviceDuration, LocalDateTime bookingStart,
@@ -99,7 +105,7 @@ public class FreeTimeServiceImpl implements FreeTimeService {
     }
 
     private boolean checkDatesIncludeBusyPeriod(LocalDateTime start, LocalDateTime end,
-                                                 LocalDateTime busyPeriodStart, LocalDateTime busyPeriodEnd) {
+                                                LocalDateTime busyPeriodStart, LocalDateTime busyPeriodEnd) {
         return isBetweenDateTimes(busyPeriodStart, start, true, end, false)
                 || isBetweenDateTimes(busyPeriodEnd, start, false, end, true);
     }

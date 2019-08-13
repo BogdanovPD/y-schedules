@@ -14,6 +14,7 @@ import org.why.studio.schedules.services.AuthService;
 import org.why.studio.schedules.services.UserLogService;
 import org.why.studio.schedules.services.UserPrimarySpecialistService;
 
+import javax.persistence.EntityManager;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -73,9 +74,15 @@ public class UserPrimarySpecialistServiceImpl implements UserPrimarySpecialistSe
         userPrimarySpecialistRepository.findByUserIdAndApprovedIsTrue(getUuid(userId))
                 .ifPresent(userPrimarySpecialistRepository::delete); //если у пользователя уже есть другой осн. специалист - удалим соответствие
         userPrimarySpecialistRepository.findByUserIdAndApprovedIsFalse(getUuid(userId)).ifPresent(pse -> {
-            pse.setApproved(true);
-            userPrimarySpecialistRepository.save(pse);
+            UserPrimarySpecialistEntity newPse = UserPrimarySpecialistEntity.builder()
+                    .userId(pse.getUserId())
+                    .specialistId(pse.getSpecialistId())
+                    .approved(true)
+                    .build();
+            userPrimarySpecialistRepository.save(newPse);
         });
+        userPrimarySpecialistRepository.findByUserIdAndApprovedIsFalse(getUuid(userId))
+                .ifPresent(userPrimarySpecialistRepository::delete);
         logAction(userId, specId, "Вы стали клиентом специалиста", "стал вашим клиентом");
     }
 
