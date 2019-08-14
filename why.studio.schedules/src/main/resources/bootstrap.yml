@@ -1,0 +1,6 @@
+spring:
+  application:
+    name: y-schedules
+  cloud:
+    config:
+      fail-fast: true

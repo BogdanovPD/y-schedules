@@ -1,0 +1,21 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2
+      author: pavel
+      changes:
+        - loadData:
+            columns:
+              - column:
+                  name: name
+                  type: string
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: duration_minutes
+                  type: numeric
+              - column:
+                  name: price
+                  type: numeric
+            file: db/changelog/csv/services.csv
+            tableName: services
