@@ -13,7 +13,6 @@ import org.why.studio.schedules.services.GoogleCalendarService;
 import org.why.studio.schedules.services.UserCalendarService;
 
 import java.io.IOException;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.LinkedList;
