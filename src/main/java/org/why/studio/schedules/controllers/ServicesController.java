@@ -9,7 +9,6 @@ import org.why.studio.schedules.services.ServiceService;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.Set;
 
 @RestController
 @RequiredArgsConstructor

@@ -14,7 +14,6 @@ import org.why.studio.schedules.services.AuthService;
 import org.why.studio.schedules.services.UserLogService;
 import org.why.studio.schedules.services.UserPrimarySpecialistService;
 
-import javax.persistence.EntityManager;
 import java.util.List;
 import java.util.stream.Collectors;
 
