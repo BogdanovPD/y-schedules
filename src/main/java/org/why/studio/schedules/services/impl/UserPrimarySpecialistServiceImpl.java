@@ -60,9 +60,18 @@ public class UserPrimarySpecialistServiceImpl implements UserPrimarySpecialistSe
     }
 
     @Override
-    public UserInfo getUserPrimarySpecialist(String userId) {
+    public UserInfo getUserPrimarySpecialistInfo(String userId) {
         return userPrimarySpecialistRepository.findByUserIdAndApprovedIsTrue(getUuid(userId))
                 .map(pse -> authService.getUserInfo(pse.getSpecialistId().toString()))
+                .orElseThrow(
+                        () -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                                "Основной специалист не найден для пользователь id=" + userId));
+    }
+
+    @Override
+    public String getUserPrimarySpecialistId(String userId) {
+        return userPrimarySpecialistRepository.findByUserIdAndApprovedIsTrue(getUuid(userId))
+                .map(userPrimarySpecialistEntity -> userPrimarySpecialistEntity.getSpecialistId().toString())
                 .orElseThrow(
                         () -> new ResponseStatusException(HttpStatus.NOT_FOUND,
                                 "Основной специалист не найден для пользователь id=" + userId));

@@ -11,7 +11,8 @@ public interface UserPrimarySpecialistService {
     void requestSetPrimarySpecialist(UserPrimarySpecialist userPrimarySpecialist);
     List<UserInfoWithId> getUserRequestsForSpecialist(String specId);
     List<UserInfoWithId> getSpecialistClients(String specId);
-    UserInfo getUserPrimarySpecialist(String userId);
+    UserInfo getUserPrimarySpecialistInfo(String userId);
+    String getUserPrimarySpecialistId(String userId);
     void acceptRequest(String userId, String specId);
     void rejectRequest(String userId, String specId);
 }

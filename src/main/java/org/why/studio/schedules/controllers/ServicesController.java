@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import org.why.studio.schedules.dto.Service;
 import org.why.studio.schedules.dto.ServicesDto;
 import org.why.studio.schedules.services.ServiceService;
+import org.why.studio.schedules.services.UserPrimarySpecialistService;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -15,6 +16,7 @@ import java.util.List;
 public class ServicesController {
 
     private final ServiceService serviceService;
+    private final UserPrimarySpecialistService userPrimarySpecialistService;
 
     @PostMapping(value = "services")
     public ResponseEntity<Service> saveService(@RequestBody @Valid Service service) {
@@ -33,16 +35,21 @@ public class ServicesController {
     }
 
     @PostMapping(value = "specialist/{id}/services")
-    public ResponseEntity<?> addServicesToUser(@PathVariable("id") String userId,
-                                               @RequestBody ServicesDto servicesDto) {
+    public ResponseEntity<?> addServicesToSpecialist(@PathVariable("id") String userId,
+                                                     @RequestBody ServicesDto servicesDto) {
         serviceService.addServicesToUser(userId, servicesDto.getServices());
         return ResponseEntity.ok().build();
     }
 
     @GetMapping(value = "specialist/{id}/services")
-    public ResponseEntity<List<Service>> getUserServices(@PathVariable("id") String userId) {
-        serviceService.getServicesByUserId(userId);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<List<Service>> getSpecialistServices(@PathVariable("id") String userId) {
+        return ResponseEntity.ok(serviceService.getServicesByUserId(userId));
+    }
+
+    @GetMapping(value = "user/{id}/specialist/services")
+    public ResponseEntity<List<Service>> getUserSpecialistServices(@PathVariable("id") String userId) {
+        String specId = userPrimarySpecialistService.getUserPrimarySpecialistId(userId);
+        return ResponseEntity.ok(serviceService.getServicesByUserId(specId));
     }
 
 }
