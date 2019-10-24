@@ -25,7 +25,7 @@ public class UserSpecialistController {
 
     @GetMapping("user/{id}/specialist")
     public ResponseEntity<UserInfo> getUserSpecialist(@PathVariable("id") String userId) {
-        return ResponseEntity.ok(userPrimarySpecialistService.getUserPrimarySpecialist(userId));
+        return ResponseEntity.ok(userPrimarySpecialistService.getUserPrimarySpecialistInfo(userId));
     }
 
     @GetMapping("specialist/{id}/client-requests")

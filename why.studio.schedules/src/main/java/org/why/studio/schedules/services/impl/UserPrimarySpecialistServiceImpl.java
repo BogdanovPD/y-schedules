@@ -14,7 +14,6 @@ import org.why.studio.schedules.services.AuthService;
 import org.why.studio.schedules.services.UserLogService;
 import org.why.studio.schedules.services.UserPrimarySpecialistService;
 
-import javax.persistence.EntityManager;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -61,9 +60,18 @@ public class UserPrimarySpecialistServiceImpl implements UserPrimarySpecialistSe
     }
 
     @Override
-    public UserInfo getUserPrimarySpecialist(String userId) {
+    public UserInfo getUserPrimarySpecialistInfo(String userId) {
         return userPrimarySpecialistRepository.findByUserIdAndApprovedIsTrue(getUuid(userId))
                 .map(pse -> authService.getUserInfo(pse.getSpecialistId().toString()))
+                .orElseThrow(
+                        () -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                                "Основной специалист не найден для пользователь id=" + userId));
+    }
+
+    @Override
+    public String getUserPrimarySpecialistId(String userId) {
+        return userPrimarySpecialistRepository.findByUserIdAndApprovedIsTrue(getUuid(userId))
+                .map(userPrimarySpecialistEntity -> userPrimarySpecialistEntity.getSpecialistId().toString())
                 .orElseThrow(
                         () -> new ResponseStatusException(HttpStatus.NOT_FOUND,
                                 "Основной специалист не найден для пользователь id=" + userId));

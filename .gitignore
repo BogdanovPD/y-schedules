@@ -1,6 +1,6 @@
-.idea
+.*
+*.iml
 target
 tokens
 log
-*.iml
 why.studio.schedules/src/main/resources/google-calendar-credentials.json
