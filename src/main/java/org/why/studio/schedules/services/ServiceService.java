@@ -10,7 +10,7 @@ public interface ServiceService {
     List<Service> getAllServices();
     Service saveService(Service service);
     void deleteService(int id);
-    void addServicesToUser(String userId, Set<Service> services);
-    List<Service> getServicesByUserId(String userId);
+    void addServicesToSpecialist(String userId, Set<Service> services);
+    List<Service> getServicesBySpecialistId(String userId);
 
 }

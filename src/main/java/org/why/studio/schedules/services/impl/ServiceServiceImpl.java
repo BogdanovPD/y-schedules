@@ -42,7 +42,7 @@ public class ServiceServiceImpl implements ServiceService {
     }
 
     @Override
-    public void addServicesToUser(String userId, Set<Service> services) {
+    public void addServicesToSpecialist(String userId, Set<Service> services) {
         UUID uuid = getUuid(userId);
         services.forEach(s -> {
             ServiceEntity serviceEntity = schedulesConverterService.convert(s, ServiceEntity.class);
@@ -52,7 +52,7 @@ public class ServiceServiceImpl implements ServiceService {
     }
 
     @Override
-    public List<Service> getServicesByUserId(String userId) {
+    public List<Service> getServicesBySpecialistId(String userId) {
         List<Service> services = convertCollectionToList(
                 serviceRepository.findAllBySpecialistsContains(getUuid(userId)),
                 schedulesConverterService, ServiceEntity.class, Service.class);

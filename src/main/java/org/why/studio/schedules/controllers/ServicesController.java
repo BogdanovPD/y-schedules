@@ -9,7 +9,7 @@ import org.why.studio.schedules.services.ServiceService;
 import org.why.studio.schedules.services.UserPrimarySpecialistService;
 
 import javax.validation.Valid;
-import java.util.List;
+import java.util.HashSet;
 
 @RestController
 @RequiredArgsConstructor
@@ -24,8 +24,10 @@ public class ServicesController {
     }
 
     @GetMapping(value = "services")
-    public ResponseEntity<List<Service>> getAllServices() {
-        return ResponseEntity.ok(serviceService.getAllServices());
+    public ResponseEntity<ServicesDto> getAllServices() {
+        return ResponseEntity.ok(ServicesDto.builder()
+                .services(serviceService.getAllServices())
+                .build());
     }
 
     @DeleteMapping(value = "services/{id}")
@@ -37,19 +39,23 @@ public class ServicesController {
     @PostMapping(value = "specialist/{id}/services")
     public ResponseEntity<?> addServicesToSpecialist(@PathVariable("id") String userId,
                                                      @RequestBody ServicesDto servicesDto) {
-        serviceService.addServicesToUser(userId, servicesDto.getServices());
+        serviceService.addServicesToSpecialist(userId, new HashSet<>(servicesDto.getServices()));
         return ResponseEntity.ok().build();
     }
 
     @GetMapping(value = "specialist/{id}/services")
-    public ResponseEntity<List<Service>> getSpecialistServices(@PathVariable("id") String userId) {
-        return ResponseEntity.ok(serviceService.getServicesByUserId(userId));
+    public ResponseEntity<ServicesDto> getSpecialistServices(@PathVariable("id") String userId) {
+        return ResponseEntity.ok(ServicesDto.builder()
+                .services(serviceService.getServicesBySpecialistId(userId))
+                .build());
     }
 
     @GetMapping(value = "user/{id}/specialist/services")
-    public ResponseEntity<List<Service>> getUserSpecialistServices(@PathVariable("id") String userId) {
+    public ResponseEntity<ServicesDto> getUserSpecialistServices(@PathVariable("id") String userId) {
         String specId = userPrimarySpecialistService.getUserPrimarySpecialistId(userId);
-        return ResponseEntity.ok(serviceService.getServicesByUserId(specId));
+        return ResponseEntity.ok(ServicesDto.builder()
+                .services(serviceService.getServicesBySpecialistId(specId))
+                .build());
     }
 
 }
