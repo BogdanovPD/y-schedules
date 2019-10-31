@@ -20,6 +20,7 @@ import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.TimeZone;
+import java.util.stream.IntStream;
 
 import static org.why.studio.schedules.constants.SchedulesConstants.*;
 import static org.why.studio.schedules.util.Utils.*;
@@ -33,19 +34,41 @@ public class FreeTimeServiceImpl implements FreeTimeService {
 
     @Override
     public List<LocalDateTime> getSpecFreeTime(String userId, LocalDate date, int serviceDuration) {
-        LocalDateTime start = date.atStartOfDay().isBefore(LocalDateTime.now())
-                //если записываюся сегодня, близжайшая запись минимум через MIN_HOURS_BEFORE_DECLINE
-                ? LocalDateTime.now().plusHours(MIN_HOURS_BEFORE_DECLINE).truncatedTo(ChronoUnit.HOURS)
-                : date.atStartOfDay().plusHours(FIRST_CONSULTATION_HOUR);
+        LocalDateTime start = getStartLocalDateTime(date);
         LocalDateTime end = date.atStartOfDay().plusDays(1).minusSeconds(1);
 
-
         FreeBusyResponse freeBusyResponse = getFreebusyResponse(userId, start, end);
+        LinkedList<TimePeriod> busyTimePeriods = getBusyTimePeriods(userId, freeBusyResponse);
+        return getUserFreeTimeList(serviceDuration, start, busyTimePeriods);
+    }
+
+    @Override
+    public List<LocalDateTime> getMonthFullBusyDays(String userId, LocalDate start) {
+        //LocalDateTime startLocalDateTime = getStartLocalDateTime(start);
+        FreeBusyResponse freeBusyResponse = getFreebusyResponse(userId, start.atStartOfDay(),
+                start.plusMonths(1).atStartOfDay().minusSeconds(1));
+        LinkedList<TimePeriod> busyTimePeriods = getBusyTimePeriods(userId, freeBusyResponse);
+        List<LocalDateTime> monthCalendar = getMonthCalendar(getStartLocalDate(start));
+        monthCalendar.removeIf(date -> getUserFreeTimeList(MIN_CONSULTATION_DURATION, date, busyTimePeriods).isEmpty());
+        return monthCalendar;
+    }
+
+    private LinkedList<TimePeriod> getBusyTimePeriods(String userId, FreeBusyResponse freeBusyResponse) {
         List<TimePeriod> busy = new LinkedList<>();
         userCalendarService.getCalendarIds(userId).forEach(
                 calId -> busy.addAll(freeBusyResponse.getCalendars().get(calId).getBusy()));
-        LinkedList<TimePeriod> busyTimePeriods = new LinkedList<>(new LinkedHashSet<>(busy));
-        return getUserFreeTimeList(serviceDuration, start, busyTimePeriods);
+        return new LinkedList<>(new LinkedHashSet<>(busy));
+    }
+
+    private LocalDateTime getStartLocalDateTime(LocalDate date) {
+        return date.atStartOfDay().isBefore(LocalDateTime.now())
+                //если записываюся сегодня, близжайшая запись минимум через MIN_HOURS_BEFORE_DECLINE
+                ? LocalDateTime.now().plusHours(MIN_HOURS_BEFORE_DECLINE).truncatedTo(ChronoUnit.HOURS)
+                : date.atStartOfDay().plusHours(FIRST_CONSULTATION_HOUR);
+    }
+
+    private LocalDate getStartLocalDate(LocalDate date) {
+        return date.isBefore(LocalDate.now()) ? LocalDate.now() : date;
     }
 
     private List<FreeBusyRequestItem> getCalendars(String userId) {
@@ -108,5 +131,16 @@ public class FreeTimeServiceImpl implements FreeTimeService {
                                                 LocalDateTime busyPeriodStart, LocalDateTime busyPeriodEnd) {
         return isBetweenDateTimes(busyPeriodStart, start, true, end, false)
                 || isBetweenDateTimes(busyPeriodEnd, start, false, end, true);
+    }
+
+    private List<LocalDateTime> getMonthCalendar(LocalDate startDate) {
+        var dates = new LinkedList<LocalDateTime>();
+        IntStream.range(startDate.getDayOfMonth(), startDate.lengthOfMonth() + 1).forEach(d ->
+                dates.add(startDate.atStartOfDay().isBefore(LocalDateTime.now()) ?
+                        LocalDateTime.now().plusHours(MIN_HOURS_BEFORE_DECLINE).withMinute(0).withSecond(0).withNano(0) :
+                        LocalDate.of(startDate.getYear(), startDate.getMonth(), d)
+                                .atTime(FIRST_CONSULTATION_HOUR, 0, 0))
+        );
+        return dates;
     }
 }

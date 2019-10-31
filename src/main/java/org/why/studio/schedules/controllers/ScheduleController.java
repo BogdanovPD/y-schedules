@@ -25,4 +25,11 @@ public class ScheduleController {
                                                                         @RequestParam("duration") int duration) {
         return ResponseEntity.ok(freeTimeService.getSpecFreeTime(specId, date, duration));
     }
+
+    @GetMapping(value = "month/busy")
+    public ResponseEntity<List<LocalDateTime>> getBusyDaysInMonthForSpecialist(@RequestParam("specId") String specId,
+                                                                        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+                                                                        @RequestParam("date") LocalDate date) {
+        return ResponseEntity.ok(freeTimeService.getMonthFullBusyDays(specId, date));
+    }
 }
