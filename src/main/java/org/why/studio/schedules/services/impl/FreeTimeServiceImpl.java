@@ -135,11 +135,17 @@ public class FreeTimeServiceImpl implements FreeTimeService {
 
     private List<LocalDateTime> getMonthCalendar(LocalDate startDate) {
         var dates = new LinkedList<LocalDateTime>();
-        IntStream.range(startDate.getDayOfMonth(), startDate.lengthOfMonth() + 1).forEach(d ->
-                dates.add(startDate.atStartOfDay().isBefore(LocalDateTime.now()) ?
-                        LocalDateTime.now().plusHours(MIN_HOURS_BEFORE_DECLINE).withMinute(0).withSecond(0).withNano(0) :
-                        LocalDate.of(startDate.getYear(), startDate.getMonth(), d)
-                                .atTime(FIRST_CONSULTATION_HOUR, 0, 0))
+        IntStream.range(startDate.getDayOfMonth(), startDate.lengthOfMonth() + 1).forEach(d -> {
+                    if (startDate.atStartOfDay().isBefore(LocalDateTime.now())) {
+                        if (LocalDateTime.now().getHour() < (LAST_CONSULTATION_HOUR - MIN_HOURS_BEFORE_DECLINE)) {
+                            dates.add(LocalDateTime.now()
+                                    .plusHours(MIN_HOURS_BEFORE_DECLINE).withMinute(0).withSecond(0).withNano(0));
+                        }
+                    } else {
+                        dates.add(LocalDate.of(startDate.getYear(), startDate.getMonth(), d)
+                                .atTime(FIRST_CONSULTATION_HOUR, 0, 0));
+                    }
+                }
         );
         return dates;
     }

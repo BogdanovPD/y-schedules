@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class UserInfo {
 
+    private String id;
     private String firstName;
     private String lastName;
     private String phone;

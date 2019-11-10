@@ -22,7 +22,9 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public UserInfo getUserInfo(String userId) {
         getUuid(userId);
-        return restHelperService.sendGetRequest(
+        UserInfo userInfo = restHelperService.sendGetRequest(
                 UriComponentsBuilder.fromUriString(userInfoUrl.concat(userId)), new UserInfo());
+        userInfo.setId(userId);
+        return userInfo;
     }
 }
