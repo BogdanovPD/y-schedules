@@ -28,7 +28,7 @@
         <jaxb-api.version>2.3.1</jaxb-api.version>
         <jaxb-runtime.version>2.3.1</jaxb-runtime.version>
         <jackson-core.version>2.9.8</jackson-core.version>
-        <google-api.version>1.28.0</google-api.version>
+        <google-api.version>1.33.3</google-api.version>
         <google-calendar.version>v3-rev20181125</google-calendar.version>
 
         <spring-cloud.version>Greenwich.SR2</spring-cloud.version>
